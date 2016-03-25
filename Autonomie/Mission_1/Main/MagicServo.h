@@ -6,6 +6,8 @@
 
 #define DIRECTION_FRONT 1
 #define DIRECTION_BACK -1
+#define NORMAL_FRONT_ORIENTATION 0
+#define REVERSE_FRONT_ORIENTATION 1
 
 class MagicServo {
   private:
