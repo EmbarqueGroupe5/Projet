@@ -31,9 +31,6 @@ void setup() {
 
   left.init();
   right.init();
-
-  left.front(100);
-  right.front(100);
 }
 
 BLYNK_WRITE(V0) //Start & Stop
@@ -64,13 +61,12 @@ void loop() {
   
   if (status) {
     if (sensor_front.detect()) {
-      left.back(100);
-      delay(500);
+      left.stop();
+      right.stop();
     }
     else {
       left.front(100);
       right.front(100);
     }
   }
-  //Serial.println(sensor_front.detect());
 }
