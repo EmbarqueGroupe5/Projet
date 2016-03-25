@@ -6,13 +6,13 @@
 #include <Servo.h>
 #include <BlynkSimpleWiFiShield101.h> // This part is for Ethernet stuff
 
-#define LEFT_SERVO_PIN 14
-#define RIGHT_SERVO_PIN 15
+#define LEFT_SERVO_PIN 15
+#define RIGHT_SERVO_PIN 14
 #define SENSOR_FRONT_PIN 0
 
 //Servos
-MagicServo left(LEFT_SERVO_PIN, REVERSE_FRONT_ORIENTATION); // Constructeur
-MagicServo right(RIGHT_SERVO_PIN, NORMAL_FRONT_ORIENTATION);// Constructeur
+MagicServo left(LEFT_SERVO_PIN, NORMAL_FRONT_ORIENTATION); // Constructeur
+MagicServo right(RIGHT_SERVO_PIN, REVERSE_FRONT_ORIENTATION);// Constructeur
 
 //Sensors
 Sensor sensor_front(SENSOR_FRONT_PIN);
@@ -27,7 +27,7 @@ void setup() {
   Serial.begin(9600);
   Blynk.begin(auth , wifi_hotspot, wifi_password);  // Here your Arduino connects to the Blynk Cloud.:
 
-  sensor_front.setLimit(600);
+  sensor_front.setLimit(500);
 
   left.init();
   right.init();
@@ -58,19 +58,15 @@ BLYNK_WRITE(V1) //STOP
 
 void loop() {
   Blynk.run();
-  if (digitalRead(PIN_SW0) == HIGH)
-    status = 1;
-    
+  
   if (status) {
     if (sensor_front.detect()) {
-      left.back(100);
-      
-      delay(500);
+      left.stop();
+      right.stop();
     }
     else {
       left.front(100);
       right.front(100);
     }
   }
-
 }
