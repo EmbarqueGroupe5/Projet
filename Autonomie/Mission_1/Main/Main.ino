@@ -1,6 +1,7 @@
 #include "MagicServo.h"
 #include "Sensor.h"
 
+#define BLYNK_PRINT Serial
 #include <WiFi101.h>
 #include <Servo.h>
 #include <BlynkSimpleWiFiShield101.h> // This part is for Ethernet stuff
@@ -9,19 +10,22 @@
 #define RIGHT_SERVO_PIN 14
 #define SENSOR_FRONT_PIN 0
 
+//Servos
 MagicServo left(LEFT_SERVO_PIN, NORMAL_FRONT_ORIENTATION); // Constructeur
 MagicServo right(RIGHT_SERVO_PIN, REVERSE_FRONT_ORIENTATION);// Constructeur
 
+//Sensors
 Sensor sensor_front(SENSOR_FRONT_PIN);
+
+//Vars
 char auth[] = "6eaa7bc2a5c44b45848dc490d170e3eb"; // Put your Auth Token here.
 bool status = 0;
+char wifi_hotspot[] = "Wifi_Arduino";
+char wifi_password[] = "aarduino";
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600); // See the connection status in Serial Monitor
-  Blynk.begin(auth , "Wifi_Arduino" , "aarduino" );  // Here your Arduino connects to the Blynk Cloud.:
   Serial.begin(9600);
-  Serial.println("Start");
+  Blynk.begin(auth , wifi_hotspot, wifi_password);  // Here your Arduino connects to the Blynk Cloud.:
 
   sensor_front.setLimit(500);
 
@@ -32,11 +36,11 @@ void setup() {
   right.front(100);
 }
 
-BLYNK_WRITE(V0) //Virtual0
+BLYNK_WRITE(V0) //Start & Stop
 {
-  if (param.asInt()==0){
-    left.writeMicroseconds(1500);
-    right.writeMicroseconds(1500);
+  if (param.asInt() == 0) {
+    left.stop();
+    right.stop();
     status = 0;
   }
   else {
@@ -46,25 +50,27 @@ BLYNK_WRITE(V0) //Virtual0
   }
 }
 
-BLYNK_WRITE(V1) //Virtual1
+BLYNK_WRITE(V1) //STOP
 {
-  if (param.asInt()==1){
-    left.writeMicroseconds(1500);
-    right.writeMicroseconds(1500);
+  if (param.asInt() == 1) {
+    left.stop();
+    right.stop();
     status = 0;
   }
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  if (sensor_front.detect()) {
-    left.back(100);
-    delay(500);
+  Blynk.run();
+  
+  if (status) {
+    if (sensor_front.detect()) {
+      left.back(100);
+      delay(500);
+    }
+    else {
+      left.front(100);
+      right.front(100);
+    }
   }
-  else {
-    left.front(100);
-    right.front(100);
-  }
-  Serial.println(sensor_front.detect());
-  delay(100);
+  //Serial.println(sensor_front.detect());
 }
