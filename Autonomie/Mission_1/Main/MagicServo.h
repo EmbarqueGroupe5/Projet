@@ -20,11 +20,13 @@ class MagicServo {
     int getAngle(int direction, int speed);
   public:
     MagicServo(int pin, int orientation);
+    void init();
     void stop();
     void run(int direction, int speed);
     void front(int speed);
     void back(int speed);
     void writeMicroseconds(int ms);
+    Servo get();
 };
 
 #endif

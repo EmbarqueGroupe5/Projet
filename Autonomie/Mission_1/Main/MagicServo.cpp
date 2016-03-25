@@ -5,6 +5,9 @@
 MagicServo::MagicServo(int pin, int orientation){
   this->pin = pin;
   this->frontOrientation = orientation;
+}
+
+void MagicServo::init(){
   this->servo.attach(pin);
 
   //Init
@@ -47,3 +50,8 @@ void MagicServo::back(int speed){
 void MagicServo::writeMicroseconds(int ms){
   this->servo.writeMicroseconds(ms);
 }
+
+Servo MagicServo::get(){
+  return this->servo;
+}
+
