@@ -13,13 +13,13 @@ MagicServo::MagicServo(int pin, int orientation){
 
 int MagicServo::getAngle(int direction, int speed) {
   if (this->frontOrientation == 0){ //Normal oriantation : 0-90° / 700-1500ms
-    if (direction == 0) //Front
+    if (direction == DIRECTION_FRONT) //Front
       return map(speed, 0, 100, 1500, 700);
     else //Back
       return map(speed, 0, 100, 1500, 2300); 
   }
   else { //Reverse oriantation : 90-180° / 1500-2300ms
-    if (direction == 0) //Front
+    if (direction == DIRECTION_FRONT) //Front
       return map(speed, 0, 100, 1500, 2300);
     else //Back
       return map(speed, 0, 100, 1500, 700);
@@ -42,4 +42,8 @@ void MagicServo::front(int speed){
 
 void MagicServo::back(int speed){
   this->run(1, speed); //Back
+}
+
+void MagicServo::writeMicroseconds(int ms){
+  this->servo.writeMicroseconds(ms);
 }

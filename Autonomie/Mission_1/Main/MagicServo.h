@@ -4,6 +4,9 @@
 #include "Arduino.h"
 #include <Servo.h>
 
+#define DIRECTION_FRONT 1
+#define DIRECTION_BACK -1
+
 class MagicServo {
   private:
     Servo servo;
@@ -19,6 +22,7 @@ class MagicServo {
     void run(int direction, int speed);
     void front(int speed);
     void back(int speed);
+    void writeMicroseconds(int ms);
 };
 
 #endif
