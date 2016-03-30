@@ -1,13 +1,14 @@
 #include "Arduino.h"
 #include "Magnetometer.h"
 #include <Wire.h>
+#include "utility/vector.h"
 
-/*Magnetometer::Magnetometer(){
-  }*/
-
+/**
+   PUBLIC
+*/
 bool Magnetometer::begin()
 {
-  bno055_opmode_t mode = OPERATION_MODE_NDOF;
+  bno055_opmode_t mode = OPERATION_MODE_NDOF; //Define static normal operating mode
   /* Enable I2C */
   Wire.begin();
 
@@ -44,12 +45,29 @@ bool Magnetometer::begin()
   /* Set the requested operating mode */
   setMode(mode);
   delay(20);
-
   return true;
 }
 
-float* Magnetometer::getValue() {
-  float euler[3];
+float Magnetometer::getX() {
+  return (this->getValue())[0];
+}
+
+float Magnetometer::getY() {
+  return (this->getValue())[1];
+}
+
+float Magnetometer::getZ() {
+  return (this->getValue())[2];
+}
+
+/**
+   PRIVATE
+*/
+/**
+   Read the value from the Magnetometer
+*/
+Vector<3> Magnetometer::getValue() {
+  Vector<3> euler;
   uint8_t buffer[6];
   memset (buffer, 0, 6);
 
@@ -74,18 +92,9 @@ float* Magnetometer::getValue() {
   return euler;
 }
 
-float Magnetometer::getX(){
-  return this->getValue()[0];
-}
-
-float Magnetometer::getY(){
-  return this->getValue()[1];
-}
-
-float Magnetometer::getZ(){
-  return this->getValue()[2];
-}
-
+/**
+   Define operating mode
+*/
 void Magnetometer::setMode(bno055_opmode_t mode)
 {
   write8(BNO055_OPR_MODE_ADDR, mode);
@@ -104,8 +113,6 @@ byte Magnetometer::read8(bno055_reg_t reg)
   Wire.requestFrom(_address, (byte)1);
 
   value = Wire.read();
-
-
   return value;
 }
 
@@ -120,7 +127,6 @@ bool Magnetometer::readLen(bno055_reg_t reg, byte * buffer, uint8_t len) {
   {
     buffer[i] = Wire.read();
   }
-
   return true;
 }
 

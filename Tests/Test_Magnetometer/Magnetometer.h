@@ -2,18 +2,19 @@
 #define Magnetometer_h
 
 #include "Arduino.h"
+#include "utility/vector.h"
 
 #define BNO055_ADDRESS_B (0x29)
 #define BNO055_ID        (0xA0)
 
 class Magnetometer {
-  public:
+  private:
     //Address enums
     typedef enum
     {
       /* Page id register definition */
       BNO055_PAGE_ID_ADDR                                     = 0X07,
-      
+
       /* PAGE0 REGISTER DEFINITION START*/
       BNO055_CHIP_ID_ADDR                                     = 0x00,
 
@@ -38,11 +39,7 @@ class Magnetometer {
 
       BNO055_SYS_CLK_STAT_ADDR                                = 0X38,
       BNO055_SYS_STAT_ADDR                                    = 0X39,
-      BNO055_SYS_ERR_ADDR                                     = 0X3A,
-
-      /* Unit selection register */
-      BNO055_UNIT_SEL_ADDR                                    = 0X3B,
-      BNO055_DATA_SELECT_ADDR                                 = 0X3C
+      BNO055_SYS_ERR_ADDR                                     = 0X3A
     } bno055_reg_t;
 
     typedef enum
@@ -70,13 +67,12 @@ class Magnetometer {
       OPERATION_MODE_NDOF                                     = 0X0C
     } bno055_opmode_t;
 
-
     typedef enum
     {
-      VECTOR_EULER         = BNO055_EULER_H_LSB_ADDR
+      VECTOR_EULER                                            = BNO055_EULER_H_LSB_ADDR
     } vector_type_t;
 
-    //Magnetometer();
+  public:
     bool  begin ();
     float getX();
     float getY();
@@ -87,7 +83,7 @@ class Magnetometer {
     bool  readLen (bno055_reg_t, byte* buffer, uint8_t len);
     bool  write8  (bno055_reg_t, byte value);
     void  setMode (bno055_opmode_t mode);
-    float* getValue();
+    Vector<3> getValue();
     uint8_t _address = BNO055_ADDRESS_B;
 };
 
