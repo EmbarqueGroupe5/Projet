@@ -33,6 +33,14 @@ void setup() {
 }
 
 void loop() {
-  Serial.println(sensor_back.detect());
+  Serial.print("front : ");
+  Serial.print(sensor_front.detect());
+  Serial.print(" - back : ");
+  Serial.print(sensor_back.detect());
+  Serial.print(" - left : ");
+  Serial.print(sensor_left.detect());
+  Serial.print(" - right : ");
+  Serial.println(sensor_right.detect());
+  Serial.println("");
   delay(400);
 }
