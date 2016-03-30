@@ -1,6 +1,6 @@
 #include "Arduino.h"
 #include "Magnetometer.h"
-#include "utility/vector.h"
+#include <Wire.h>
 
 /*Magnetometer::Magnetometer(){
   }*/
@@ -48,8 +48,8 @@ bool Magnetometer::begin()
   return true;
 }
 
-imu::vector<3> Magnetometer::getVector() {
-  std::vector<3> euler;
+float* Magnetometer::getValue() {
+  float euler[3];
   uint8_t buffer[6];
   memset (buffer, 0, 6);
 
@@ -74,14 +74,42 @@ imu::vector<3> Magnetometer::getVector() {
   return euler;
 }
 
+float Magnetometer::getX(){
+  return this->getValue()[0];
+}
+
+float Magnetometer::getY(){
+  return this->getValue()[1];
+}
+
+float Magnetometer::getZ(){
+  return this->getValue()[2];
+}
+
 void Magnetometer::setMode(bno055_opmode_t mode)
 {
-  _mode = mode;
-  write8(BNO055_OPR_MODE_ADDR, _mode);
+  write8(BNO055_OPR_MODE_ADDR, mode);
   delay(30);
 }
 
-bool Magnetometer::readLen(adafruit_bno055_reg_t reg, byte * buffer, uint8_t len) {
+byte Magnetometer::read8(bno055_reg_t reg)
+{
+  byte value = 0;
+
+  Wire.beginTransmission(_address);
+
+  Wire.write((uint8_t)reg);
+
+  Wire.endTransmission();
+  Wire.requestFrom(_address, (byte)1);
+
+  value = Wire.read();
+
+
+  return value;
+}
+
+bool Magnetometer::readLen(bno055_reg_t reg, byte * buffer, uint8_t len) {
   Wire.beginTransmission(_address);
   Wire.write((uint8_t)reg);
 
@@ -96,7 +124,7 @@ bool Magnetometer::readLen(adafruit_bno055_reg_t reg, byte * buffer, uint8_t len
   return true;
 }
 
-bool Magnetometer::write8(adafruit_bno055_reg_t reg, byte value) {
+bool Magnetometer::write8(bno055_reg_t reg, byte value) {
   Wire.beginTransmission(_address);
 
   Wire.write((uint8_t)reg);

@@ -5,7 +5,7 @@
 
 
 //Magnetometer
-Adafruit_BNO055 magneto = Adafruit_BNO055(55);
+Magnetometer magneto;
 
 void setup() {
   Serial.begin(9600);
@@ -18,10 +18,8 @@ void setup() {
 
 void loop() {
   //Magnetometer
-  sensors_event_t magneto_event;
-  magneto.getEvent(&magneto_event);
   
-  Serial.println(magneto_event.magnetic.x);
+  Serial.println(magneto.getX());
 
   delay(100);
 }
