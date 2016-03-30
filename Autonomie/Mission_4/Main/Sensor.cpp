@@ -14,10 +14,17 @@ void Sensor::setLimit(int limit){
 }
 
 bool Sensor::detect(){
-  return (this->read() > this->limit);
+  if (this->operatorMode == SENSOR_MODE_PLUS) //Mode supérieur
+      return (this->read() > this->limit);
+  else //Mode inférieur
+    return (this->read() < this->limit);
 }
 
 int Sensor::readMap(int begin, int end) {
   return map(this->read(), 0, 1023, begin, end);
+}
+
+void Sensor::setMode(int operatorMode){
+  this->operatorMode = operatorMode;
 }
 
