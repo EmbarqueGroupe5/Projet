@@ -17,6 +17,9 @@
 #define SENSOR_LUM_PIN 4
 #define SENSOR_GREY_PIN 5
 
+#define HIGH 0
+#define LOW 1
+
 //Servos
 MagicServo left(LEFT_SERVO_PIN, REVERSE_FRONT_ORIENTATION); // Constructeur
 MagicServo right(RIGHT_SERVO_PIN, NORMAL_FRONT_ORIENTATION);// Constructeur
@@ -42,8 +45,11 @@ void setup() {
   Serial.begin(9600);
   Blynk.begin(auth , wifi_hotspot, wifi_password);  // Connect to Blynk Cloud
 
+  pinMode(PIN_SW0, INPUT_PULLUP);
+
   sensor_front.setLimit(600);
-  sensor_back.setLimit(600);
+  sensor_back.setMode(SENSOR_MODE_MINUS); //Valeur faible si detection
+  sensor_back.setLimit(150);
   sensor_left.setLimit(600);
   sensor_right.setLimit(600);
   sensor_grey.setLimit(600);
@@ -58,7 +64,7 @@ BLYNK_WRITE(V0) //Start & Stop
     left.stop();
     right.stop();
     status = 0;
-  }
+   }
   else
     status = 1;
 }
@@ -75,22 +81,26 @@ BLYNK_WRITE(V1) //STOP
 void loop() {
   Blynk.run();
 
-  if (digitalRead(PIN_SW0) == HIGH)
-    status = 1;
+  if (digitalRead(PIN_SW0) == HIGH) {
+    if (status)
+      status = 0;
+     else status = 1;
+  }
     
   if (status) {
     if (sensor_right.detect() && !sensor_front.detect()) { //Suit droite & voie libre
       robot.forward(100);
+      //Serial.println("front");
     }
     else if (sensor_right.detect() && sensor_front.detect()) { //Suit droite & bloqué : stop tourne gauche
       robot.left(100);
-      delay(300);
-      robot.stop();
+      //Serial.println("left");
+      //delay(200);
     }
     else if (!sensor_right.detect()) {
       robot.right(100);
-      delay(300);
-      robot.stop();
+      //Serial.println("right");
+      //delay(200);
     }
     else if (sensor_front.detect() && sensor_back.detect() && sensor_left.detect() && sensor_right.detect()) {
       robot.stop();
