@@ -1,5 +1,6 @@
 #include "MagicServo.h"
 #include "Sensor.h"
+#include "Magnetometer.h"
 #include "Robot.h"
 #include <Servo.h>
 
@@ -43,7 +44,7 @@ char wifi_hotspot[] = "Wifi_Arduino";
 char wifi_password[] = "aarduino";
 
 //Magnetometer
-Adafruit_BNO055 magneto = Adafruit_BNO055(55);
+Magnetometer magneto;
 
 void setup() {
   Serial.begin(9600);
@@ -62,7 +63,7 @@ void setup() {
   right.init();
 
   while (!magneto.begin()) {
-    Serial.println("No BNO !");
+    Serial.println("No Magnetometer found !");
     delay(1000);
   }
 }
@@ -91,9 +92,7 @@ void loop() {
   Blynk.run();
 
   //Magnetometer
-  sensors_event_t magneto_event;
-  magneto.getEvent(&magneto_event);
-  float angle = magneto_event.orientation.x;
+  float angle = magneto.getX();
 
   if (digitalRead(PIN_SW0) == HIGH) {
     if (status)
