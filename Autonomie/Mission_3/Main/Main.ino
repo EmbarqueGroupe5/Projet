@@ -1,11 +1,15 @@
 #include "MagicServo.h"
 #include "Sensor.h"
 #include "Robot.h"
+#include <Servo.h>
 
 #define BLYNK_PRINT Serial
 #include <WiFi101.h>
-#include <Servo.h>
 #include <BlynkSimpleWiFiShield101.h>
+//Magnetometer
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
+#include <Wire.h>
 
 #define LEFT_SERVO_PIN 14
 #define RIGHT_SERVO_PIN 15
@@ -38,18 +42,29 @@ bool status = 0;
 char wifi_hotspot[] = "Wifi_Arduino";
 char wifi_password[] = "aarduino";
 
+//Magnetometer
+Adafruit_BNO055 magneto = Adafruit_BNO055(55);
+
 void setup() {
   Serial.begin(9600);
   Blynk.begin(auth , wifi_hotspot, wifi_password);  // Connect to Blynk Cloud
 
+  pinMode(PIN_SW0, INPUT_PULLUP);
+
   sensor_front.setLimit(600);
-  sensor_back.setLimit(600);
+  sensor_back.setMode(SENSOR_MODE_MINUS); //Valeur faible si detection
+  sensor_back.setLimit(150);
   sensor_left.setLimit(600);
   sensor_right.setLimit(600);
   sensor_grey.setLimit(180);
 
   left.init();
   right.init();
+
+  while (!magneto.begin()) {
+    Serial.println("No BNO !");
+    delay(1000);
+  }
 }
 
 BLYNK_WRITE(V0) //Start & Stop
@@ -74,10 +89,18 @@ BLYNK_WRITE(V1) //STOP
 
 void loop() {
   Blynk.run();
-  int angle = 20 ; 
-  if (digitalRead(PIN_SW0) == HIGH)
-    status = 1;
-    
+
+  //Magnetometer
+  sensors_event_t magneto_event;
+  magneto.getEvent(&magneto_event);
+  float angle = magneto_event.orientation.x;
+
+  if (digitalRead(PIN_SW0) == HIGH) {
+    if (status)
+      status = 0;
+    else status = 1;
+  }
+
   if (status) {
     while (sensor_grey.detect())
     {
@@ -86,29 +109,12 @@ void loop() {
     while (!sensor_grey.detect())
     {
       robot.stop() ;
-      if (angle >= 0 && angle < 180){
+      if (angle >= 0 && angle < 180) {
         robot.left(20) ;
       }
-      else if (angle >= 180 && angle < 360){
+      else if (angle >= 180 && angle < 360) {
         robot.right(20) ;
       }
     }
-    /*if (sensor_right.detect() && !sensor_front.detect()) { //Suit droite & voie libre
-      robot.forward(100);
-    }
-    else if (sensor_right.detect() && sensor_front.detect()) { //Suit droite & bloqué : stop tourne gauche
-      robot.left(100);
-      delay(300);
-      robot.stop();
-    }
-    else if (!sensor_right.detect()) {
-      robot.right(100);
-      delay(300);
-      robot.stop();
-    }
-    else if (sensor_front.detect() && sensor_back.detect() && sensor_left.detect() && sensor_right.detect()) {
-      robot.stop();
-    }*/
   }
-
 }
