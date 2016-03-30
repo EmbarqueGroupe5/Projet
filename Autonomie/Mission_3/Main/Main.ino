@@ -14,8 +14,8 @@
 #define SENSOR_BACK_PIN 1
 #define SENSOR_LEFT_PIN 2
 #define SENSOR_RIGHT_PIN 3
-#define SENSOR_LUM_PIN 4
-#define SENSOR_GREY_PIN 5
+#define SENSOR_LUM_PIN 5
+#define SENSOR_GREY_PIN 4
 
 //Servos
 MagicServo left(LEFT_SERVO_PIN, REVERSE_FRONT_ORIENTATION); // Constructeur
@@ -46,7 +46,7 @@ void setup() {
   sensor_back.setLimit(600);
   sensor_left.setLimit(600);
   sensor_right.setLimit(600);
-  sensor_grey.setLimit(600);
+  sensor_grey.setLimit(180);
 
   left.init();
   right.init();
@@ -74,12 +74,26 @@ BLYNK_WRITE(V1) //STOP
 
 void loop() {
   Blynk.run();
-
+  int angle = 20 ; 
   if (digitalRead(PIN_SW0) == HIGH)
     status = 1;
     
   if (status) {
-    if (sensor_right.detect() && !sensor_front.detect()) { //Suit droite & voie libre
+    while (sensor_grey.detect())
+    {
+      robot.forward(100) ;
+    }
+    while (!sensor_grey.detect())
+    {
+      robot.stop() ;
+      if (angle >= 0 && angle < 180){
+        robot.left(20) ;
+      }
+      else if (angle >= 180 && angle < 360){
+        robot.right(20) ;
+      }
+    }
+    /*if (sensor_right.detect() && !sensor_front.detect()) { //Suit droite & voie libre
       robot.forward(100);
     }
     else if (sensor_right.detect() && sensor_front.detect()) { //Suit droite & bloqué : stop tourne gauche
@@ -94,7 +108,7 @@ void loop() {
     }
     else if (sensor_front.detect() && sensor_back.detect() && sensor_left.detect() && sensor_right.detect()) {
       robot.stop();
-    }
+    }*/
   }
 
 }
