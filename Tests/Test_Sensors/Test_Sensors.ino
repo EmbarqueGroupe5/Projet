@@ -7,8 +7,8 @@
 #define SENSOR_BACK_PIN 1
 #define SENSOR_LEFT_PIN 2
 #define SENSOR_RIGHT_PIN 3
-#define SENSOR_LUM_PIN 4
-#define SENSOR_GREY_PIN 5
+#define SENSOR_LUM_PIN 5
+#define SENSOR_GREY_PIN 4
 
 //Sensors
 Sensor sensor_front(SENSOR_FRONT_PIN);
@@ -41,6 +41,9 @@ void loop() {
   Serial.print(sensor_left.detect());
   Serial.print(" - right : ");
   Serial.println(sensor_right.detect());
+  Serial.println("");
+  Serial.print(" - grey : ");
+  Serial.println(sensor_grey.read());
   Serial.println("");
   delay(400);
 }
