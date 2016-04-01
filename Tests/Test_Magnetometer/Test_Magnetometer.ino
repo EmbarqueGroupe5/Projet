@@ -1,8 +1,4 @@
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>
-#include <Wire.h>
 #include "Magnetometer.h"
-
 
 //Magnetometer
 Magnetometer magneto;
@@ -20,6 +16,5 @@ void loop() {
   //Magnetometer
   
   Serial.println(magneto.getX());
-
   delay(100);
 }
