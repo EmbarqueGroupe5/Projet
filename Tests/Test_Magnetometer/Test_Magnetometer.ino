@@ -12,9 +12,11 @@ void setup() {
   }
 }
 
+
+
 void loop() {
   //Magnetometer
   
-  Serial.println(magneto.getX());
-  delay(100);
+  Serial.println(diff(330, 200));
+  delay(1000);
 }
