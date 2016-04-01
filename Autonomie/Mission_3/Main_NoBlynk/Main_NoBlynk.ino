@@ -3,10 +3,6 @@
 #include "Magnetometer.h"
 #include "Robot.h"
 
-#define BLYNK_PRINT Serial
-#include <WiFi101.h>
-#include <BlynkSimpleWiFiShield101.h>
-
 #define LEFT_SERVO_PIN 14
 #define RIGHT_SERVO_PIN 15
 
@@ -25,38 +21,23 @@ MagicServo left(LEFT_SERVO_PIN, REVERSE_FRONT_ORIENTATION); // Constructeur
 MagicServo right(RIGHT_SERVO_PIN, NORMAL_FRONT_ORIENTATION);// Constructeur
 
 //Sensors
-Sensor sensor_front(SENSOR_FRONT_PIN);
-Sensor sensor_back(SENSOR_BACK_PIN);
-Sensor sensor_left(SENSOR_LEFT_PIN);
-Sensor sensor_right(SENSOR_RIGHT_PIN);
-Sensor sensor_lum(SENSOR_LUM_PIN);
 Sensor sensor_grey(SENSOR_GREY_PIN);
 
 //Robot
 Robot robot(left, right);
 
 //Vars
-char auth[] = "6eaa7bc2a5c44b45848dc490d170e3eb"; // Blynk Token
 bool status = 0;
-char wifi_hotspot[] = "Wifi_Arduino";
-char wifi_password[] = "aarduino";
-
 float angle = 0.0;
 
 //Magnetometer
 Magnetometer magneto;
 
 void setup() {
-  Serial.begin(115200);
-  Blynk.begin(auth , wifi_hotspot, wifi_password);  // Connect to Blynk Cloud
+  Serial.begin(9600);
 
   pinMode(PIN_SW0, INPUT_PULLUP);
 
-  sensor_front.setLimit(600);
-  sensor_back.setMode(SENSOR_MODE_MINUS); //Valeur faible si detection
-  sensor_back.setLimit(150);
-  sensor_left.setLimit(600);
-  sensor_right.setLimit(600);
   sensor_grey.setMode(SENSOR_MODE_MINUS);
   sensor_grey.setLimit(400); //Detecte en dessous de 400
 
@@ -69,63 +50,40 @@ void setup() {
   }
 }
 
-BLYNK_WRITE(V0) //Start & Stop
-{
-  if (param.asInt() == 0) {
-    left.stop();
-    right.stop();
-    status = 0;
-  }
-  else
-    status = 1;
-}
-
-BLYNK_WRITE(V1) //STOP
-{
-  if (param.asInt() == 1) {
-    left.stop();
-    right.stop();
-    status = 0;
-  }
-}
-
-float diff(float a, float b) {
-  float diff = b - a ;
+int diff(int a, int b) {
+  int diff = b - a ;
   if (diff < -180) diff += 360;
   else if (diff > 180) diff -= 360;
   return diff;
 }
 
 void loop() {
-  Blynk.run();
-
   if (digitalRead(PIN_SW0) == HIGH) {
     if (status)
       status = 0;
     else status = 1;
   }
 
-  
+  if (status) {
     if (sensor_grey.detect())
     {
       robot.forward(100) ;
-      float angle = magneto.getX();
-      Serial.println("front");
+      int angle = magneto.getX();
+      //Serial.println("front");
     }
     else // !detect
     {
-      float actualAngle = magneto.getX();
-      
-
-      float diffe = diff(actualAngle, angle);
-      Serial.println(diffe);
+      int actualAngle = magneto.getX();
+      int diffe = diff(angle, actualAngle);
+      //Serial.println(diffe);
       if (diffe > 0) {
-        robot.right(20) ;
+        robot.right(10);
+        //Serial.println("right");
       }
       else {
-        robot.left(20) ;
+        robot.left(10);
+        //Serial.println("left");
       }
     }
-    delay(500);
-  
+  }
 }
