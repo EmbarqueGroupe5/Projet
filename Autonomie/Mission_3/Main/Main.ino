@@ -2,15 +2,10 @@
 #include "Sensor.h"
 #include "Magnetometer.h"
 #include "Robot.h"
-#include <Servo.h>
 
 #define BLYNK_PRINT Serial
 #include <WiFi101.h>
 #include <BlynkSimpleWiFiShield101.h>
-//Magnetometer
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>
-#include <Wire.h>
 
 #define LEFT_SERVO_PIN 14
 #define RIGHT_SERVO_PIN 15
