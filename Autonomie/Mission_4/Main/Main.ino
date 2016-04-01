@@ -30,7 +30,6 @@ Sensor sensor_back(SENSOR_BACK_PIN);
 Sensor sensor_left(SENSOR_LEFT_PIN);
 Sensor sensor_right(SENSOR_RIGHT_PIN);
 Sensor sensor_lum(SENSOR_LUM_PIN);
-Sensor sensor_grey(SENSOR_GREY_PIN);
 
 //Robot
 Robot robot(left, right);
@@ -47,12 +46,12 @@ void setup() {
 
   pinMode(PIN_SW0, INPUT_PULLUP);
 
-  sensor_front.setLimit(600);
-  sensor_back.setMode(SENSOR_MODE_MINUS); //Valeur faible si detection
-  sensor_back.setLimit(150);
-  sensor_left.setLimit(600);
-  sensor_right.setLimit(600);
-  sensor_grey.setLimit(600);
+  sensor_front.setLimit(400);
+  //sensor_back.setMode(SENSOR_MODE_MINUS); //Valeur faible si detection
+  //sensor_back.setLimit(150);
+  sensor_left.setLimit(400);
+  sensor_right.setLimit(400);
+
 
   left.init();
   right.init();
@@ -89,20 +88,21 @@ void loop() {
     
   if (status) {
     if (sensor_right.detect() && !sensor_front.detect()) { //Suit droite & voie libre
-      robot.forward(100);
+      robot.forward(20);
       //Serial.println("front");
     }
     else if (sensor_right.detect() && sensor_front.detect()) { //Suit droite & bloqué : stop tourne gauche
-      robot.left(100);
+      robot.left(20);
       //Serial.println("left");
       //delay(200);
     }
     else if (!sensor_right.detect()) {
-      robot.right(100);
+      robot.right(20);
       //Serial.println("right");
       //delay(200);
     }
-    else if (sensor_front.detect() && sensor_back.detect() && sensor_left.detect() && sensor_right.detect()) {
+    
+    else if (sensor_front.detect() && sensor_left.detect() && sensor_right.detect()) {
       robot.stop();
     }
   }
