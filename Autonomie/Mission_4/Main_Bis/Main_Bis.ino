@@ -87,22 +87,19 @@ void loop() {
   }
     
   if (status) {
-    if (sensor_right.detect() || sensor_left.detect() && !sensor_front.detect()) { //Suit droite & voie libre
-      robot.forward(20);
+    if (sensor_right.detect()) { //Suit droite & voie libre
+      right.front(100);
+      left.stop();
+      delay(100);
       //Serial.println("front");
     }
-    else if (sensor_right.detect() && sensor_left.detect() && sensor_front.detect()) { //Suit droite & bloqué : stop tourne gauche
-      robot.left(20);
+    else if (sensor_front.detect() || sensor_right.detect()) { //Suit droite & bloqué : stop tourne gauche
+      right.stop();
+      left.front(100);
+      delay(100);
       //Serial.println("left");
       //delay(200);
     }
-    else if (!sensor_right.detect() && !sensor_left.detect() && !sensor_front.detect()) {
-      robot.right(20);
-      //Serial.println("right");
-      //delay(200);
-    }
-    else 
-      robot.stop();
     
   }
 
