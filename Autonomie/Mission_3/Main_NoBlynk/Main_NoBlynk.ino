@@ -29,6 +29,8 @@ Robot robot(left, right);
 //Vars
 bool status = 0;
 float angle = 0.0;
+float actualAngle = 0.0;
+float diffe = 0.0;
 
 //Magnetometer
 Magnetometer magneto;
@@ -39,7 +41,7 @@ void setup() {
   pinMode(PIN_SW0, INPUT_PULLUP);
 
   sensor_grey.setMode(SENSOR_MODE_MINUS);
-  sensor_grey.setLimit(400); //Detecte en dessous de 400
+  sensor_grey.setLimit(300); //Detecte en dessous de 400
 
   left.init();
   right.init();
@@ -68,20 +70,22 @@ void loop() {
     if (sensor_grey.detect())
     {
       robot.forward(100) ;
-      int angle = magneto.getX();
+      angle = magneto.getX();
       //Serial.println("front");
     }
     else // !detect
     {
-      int actualAngle = magneto.getX();
-      int diffe = diff(angle, actualAngle);
+      actualAngle = magneto.getX();
+      diffe = diff(actualAngle, angle + 3);
       //Serial.println(diffe);
       if (diffe > 0) {
-        robot.right(10);
+        left.front(100);
+        left.stop();
         //Serial.println("right");
       }
       else {
-        robot.left(10);
+        right.front(100);
+        left.stop();
         //Serial.println("left");
       }
     }
