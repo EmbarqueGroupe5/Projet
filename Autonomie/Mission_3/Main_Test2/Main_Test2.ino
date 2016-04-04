@@ -55,9 +55,18 @@ void loop() {
     if (sensor_grey.detect())
     {
       robot.left(100) ;
+<<<<<<< HEAD
       right.stop();
     }
     else 
       robot.right(100);
       left.stop();
+=======
+      right.stop;
+    }
+    else 
+      robot.right(100);
+      left.stop;
+  
+>>>>>>> origin/develop
 }
