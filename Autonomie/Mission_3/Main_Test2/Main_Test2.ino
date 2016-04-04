@@ -98,8 +98,10 @@ void loop() {
     if (sensor_grey.detect())
     {
       robot.left(100) ;
+      right.stop;
     }
     else 
       robot.right(100);
+      left.stop;
   
 }
