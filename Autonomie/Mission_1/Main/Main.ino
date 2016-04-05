@@ -1,5 +1,6 @@
 #include "MagicServo.h"
 #include "Sensor.h"
+#include <ArduinoUnit.h>
 
 #define BLYNK_PRINT Serial
 #include <WiFi101.h>
@@ -13,7 +14,6 @@
 //Servos
 MagicServo left(LEFT_SERVO_PIN, NORMAL_FRONT_ORIENTATION); // Constructeur
 MagicServo right(RIGHT_SERVO_PIN, REVERSE_FRONT_ORIENTATION);// Constructeur
-
 //Sensors
 Sensor sensor_front(SENSOR_FRONT_PIN);
 
@@ -31,6 +31,16 @@ void setup() {
 
   left.init();
   right.init();
+}
+
+test(correct)
+{
+  assertEqual(sensor_front.detect(),1);
+}
+
+test(incorrect)
+{
+  assertNotEqual(sensor_front.detect(),1);
 }
 
 BLYNK_WRITE(V0) //Start & Stop
@@ -69,4 +79,5 @@ void loop() {
       right.front(100);
     }
   }
+  Test::run();
 }

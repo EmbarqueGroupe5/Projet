@@ -1,5 +1,6 @@
 #include "MagicServo.h"
 #include "Sensor.h"
+#include <ArduinoUnit.h>
 
 #define BLYNK_PRINT Serial
 #include <WiFi101.h>
@@ -31,6 +32,15 @@ void setup() {
 
   left.init();
   right.init();
+}
+test(correct)
+{
+  assertEqual(sensor_front.detect(),1);
+}
+
+test(incorrect)
+{
+  assertNotEqual(sensor_front.detect(),1);
 }
 
 BLYNK_WRITE(V0) //Start & Stop
@@ -72,5 +82,6 @@ void loop() {
       right.front(100);
     }
   }
+  Test::run();
 
 }
