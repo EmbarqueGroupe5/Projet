@@ -1,6 +1,7 @@
 #include "MagicServo.h"
 #include "Sensor.h"
 #include "Robot.h"
+#include <ArduinoUnit.h>
 
 #define BLYNK_PRINT Serial
 #include <WiFi101.h>
@@ -51,6 +52,23 @@ void setup() {
   left.init();
   right.init();
 }
+test(one)
+{
+  assertEqual(sensor_front.detect(),1);
+  
+}
+
+test(two)
+{
+  assertEqual(sensor_left.detect(),1);
+  
+}
+
+test(three)
+{
+  assertEqual(sensor_right.detect(),1);
+  
+}
 
 BLYNK_WRITE(V0) //Start & Stop
 {
@@ -74,6 +92,7 @@ BLYNK_WRITE(V1) //STOP
 
 void loop() {
   Blynk.run();
+  Test::run();
 
   if (digitalRead(PIN_SW0) == HIGH) {
     if (status)
