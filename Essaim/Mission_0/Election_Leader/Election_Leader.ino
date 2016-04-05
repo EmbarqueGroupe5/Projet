@@ -2,16 +2,16 @@
 /*
   WiFi UDP Send and Receive String
 
- This sketch wait an UDP packet on localPort using a WiFi shield.
- When a packet is received an Acknowledge packet is sent to the client on port remotePort
+  This sketch wait an UDP packet on localPort using a WiFi shield.
+  When a packet is received an Acknowledge packet is sent to the client on port remotePort
 
- Circuit:
- * WiFi shield attached
+  Circuit:
+   WiFi shield attached
 
- created 30 December 2012
- by dlf (Metodo2 srl)
+  created 30 December 2012
+  by dlf (Metodo2 srl)
 
- */
+*/
 
 
 #include <SPI.h>
@@ -85,10 +85,10 @@ void loop() {
     int len = Udp.read(packetBuffer, 255);
     String msg = packetBuffer;
     msg.trim();
-    if (msg == "Je suis leader"){
+    if (msg == "Je suis leader") {
       lead = false;
       ipLead = Udp.remoteIP();
-      Serial.println("Un nouveau leader est connecté");
+      Serial.println("Un nouveau leader est connecté : ");
       Serial.println(ipLead);
     }
     Serial.println("Contents:");
@@ -98,6 +98,15 @@ void loop() {
     Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
     Udp.write(ReplyBuffer);
     Udp.endPacket();
+  }
+  if (lead) {
+    digitalWrite(ledPin, LOW);
+  }
+  else {
+    digitalWrite(ledPin, LOW);
+    delay(1000);
+    digitalWrite(ledPin, HIGH);
+    delay(1000);
   }
 }
 
