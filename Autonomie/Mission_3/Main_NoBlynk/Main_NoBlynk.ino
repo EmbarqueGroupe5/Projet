@@ -2,6 +2,7 @@
 #include "Sensor.h"
 #include "Magnetometer.h"
 #include "Robot.h"
+#include <ArduinoUnit.h>
 
 #define LEFT_SERVO_PIN 14
 #define RIGHT_SERVO_PIN 15
@@ -59,7 +60,19 @@ int diff(int a, int b) {
   return diff;
 }
 
+test(one)
+{
+  assertEqual(sensor_grey.detect(),1);
+  
+}
+
+test(two)
+{
+  assertEqual(magneto.begin(),1);
+}
+
 void loop() {
+  Test::run();
   if (digitalRead(PIN_SW0) == HIGH) {
     if (status)
       status = 0;
@@ -90,4 +103,5 @@ void loop() {
       }
     }
   }
+  
 }
